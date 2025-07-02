@@ -9,6 +9,12 @@ def get_tokens_for_user(user):
     return {
         'refresh': str(refresh),
         'access': str(refresh.access_token),
+        'user': {
+            'id': user.id,
+            'email': user.email,
+            'name': user.name,
+            'role': user.role,
+        }
     }
 
 class RegisterView(APIView):
