@@ -15,14 +15,20 @@ def intake_client(request):
             data = request.POST
             files = request.FILES
             
+            # Validate required fields
+            required_fields = ['full_name', 'dob', 'phone', 'email', 'staff_signature']
+            for field in required_fields:
+                if not data.get(field):
+                    return JsonResponse({'error': f'Missing required field: {field}'}, status=400)
+            
             client = Client.objects.create(
                 user = request.user,  # if authenticated via JWT or DRF
                 full_name=data['full_name'],
                 dob=data['dob'],
                 phone=data['phone'],
                 email=data['email'],
-                num_children=data['num_children'],
-                num_adults=data['num_adults'],
+                num_children=int(data.get('num_children', 0)) if data.get('num_children') else 0,
+                num_adults=int(data.get('num_adults', 0)) if data.get('num_adults') else 0,
                 snap=bool(data.get('snap')),
                 wic=bool(data.get('wic')),
                 tanf=bool(data.get('tanf')),
@@ -31,9 +37,9 @@ def intake_client(request):
                 food_allergies=data.get('food_allergies', ''),
                 consent_signed=bool(data.get('consent_signed')),
                 staff_signature=data['staff_signature'],
-                lease_doc=files['lease_doc'],
-                id_doc=files['id_doc'],
-                bank_statement=files['bank_statement'],
+                lease_doc=files.get('lease_doc'),
+                id_doc=files.get('id_doc'),
+                bank_statement=files.get('bank_statement'),
                 qualified=False
             )
             

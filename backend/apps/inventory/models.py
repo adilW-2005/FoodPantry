@@ -1,5 +1,5 @@
-from datetime import timezone
 from django.db import models
+from django.utils import timezone
 from backend.apps.auth.models import User
 
 # Abstract base item to link to VisitItems
@@ -41,6 +41,7 @@ class GroceryBatch(models.Model):
     quantity = models.PositiveIntegerField()
     expiration_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def is_expired(self):
         return self.expiration_date < timezone.now().date()

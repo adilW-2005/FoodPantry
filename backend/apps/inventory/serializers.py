@@ -20,12 +20,17 @@ class GroceryItemSerializer(serializers.ModelSerializer):
             return GroceryBatchSerializer(batch).data
         return None
     
+    def get_batches(self, obj):
+        batches = GroceryBatch.objects.filter(item=obj).order_by('expiration_date')
+        return GroceryBatchSerializer(batches, many=True).data
+
 class GroceryBatchSerializer(serializers.ModelSerializer):
     days_until_expiration = serializers.SerializerMethodField()
+    expiration_date = serializers.DateField()
 
     class Meta:
         model = GroceryBatch
-        fields = ['id', 'quantity', 'expiration_date', 'days_until_expiration']
+        fields = ['id','item', 'quantity', 'expiration_date', 'days_until_expiration', 'is_active']
 
     def get_days_until_expiration(self, obj):
         return obj.days_until_expiration()
@@ -47,3 +52,4 @@ class HomeItemSerializer(serializers.ModelSerializer):
     
     def is_out_of_stock(self, obj):
         return obj.quantity == 0
+

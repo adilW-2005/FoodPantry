@@ -14,12 +14,12 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-46dlh(0ug6dbqejeiqr^(bmj-q%ye6f9!4ism-5nz0x2lhxxx)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -52,6 +52,12 @@ INSTALLED_APPS = [
     "corsheaders",
     "storages",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 # URL Configuration
 APPEND_SLASH = False
@@ -87,6 +93,9 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
+# Reduce preflight cache to prevent future issues
+CORS_PREFLIGHT_MAX_AGE = 0
+
 # Fix middleware order
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -96,7 +105,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware"
 ]
 
 ROOT_URLCONF = "backend.urls"

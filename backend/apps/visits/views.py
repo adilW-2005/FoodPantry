@@ -39,7 +39,7 @@ def view_my_visit(request, id):
     try:
         visit = Visit.objects.select_related('client') \
             .prefetch_related('grocery_items__batch__item', 'home_items__item') \
-            .get(id=id, client=request.user)
+            .get(id=id, client=request.user.client_profile)
     except Visit.DoesNotExist:
         return JsonResponse({"error": "Visit not found or unauthorized"}, status=404)
 
@@ -49,7 +49,7 @@ def view_my_visit(request, id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsClientUser])
 def view_my_visit_history(request):
-    visits = Visit.objects.filter(client=request.user) \
+    visits = Visit.objects.filter(client=request.user.client_profile) \
         .select_related('client') \
         .prefetch_related('grocery_items__batch__item', 'home_items__item') \
         .order_by('-created_at')  # latest visits first
@@ -66,11 +66,10 @@ def start_visit(request):
     visit_data = {
         "name": data.get("name"),
         "address": data.get("address"),
-        "client": request.user
     }
     visit_serializer = VisitSerializer(data=visit_data)
     if visit_serializer.is_valid():
-        visit = visit_serializer.save()                    
+        visit = visit_serializer.save(client=request.user.client_profile)                   
         return JsonResponse({
             "message": "Visit started successfully",
             "visit_id": visit.id
@@ -112,7 +111,7 @@ def submit_visit(request):
     }
 
     try:
-        visit = Visit.objects.get(id=visit_id, client=request.user)
+        visit = Visit.objects.get(id=visit_id, client=request.user.client_profile)
         if visit.completed:
             return JsonResponse({"error": "Visit already completed"}, status=400)
 
@@ -135,9 +134,8 @@ def submit_visit(request):
         )
         batch.quantity -= quantity
         if batch.quantity == 0:
-            batch.delete()
-        else:
-            batch.save()
+            batch.is_active = False
+        batch.save()
 
     # Handle home items
     for item in home_items:
@@ -183,24 +181,37 @@ def edit_visit(request):
     if pin != os.getenv("PIN"):
         return JsonResponse({"error": "Invalid pin"}, status=400)
 
-    visit = Visit.objects.get(id=visit_id, client=request.user)
+    try:
+        visit = Visit.objects.get(id=visit_id, client=request.user.client)
+    except Visit.DoesNotExist:
+        return JsonResponse({"error": "Visit not found or unauthorized"}, status=404)
 
-    # Clear previous item selections
+    # Step 1: Restore inventory from old visit selections
+    for item in visit.grocery_items.all():
+        batch = item.batch
+        batch.quantity += item.quantity
+        batch.save()
+
+    for item in visit.home_items.all():
+        home_item = item.item
+        home_item.quantity += item.quantity
+        home_item.is_active = True
+        home_item.save()
+
+    # Step 2: Clear old visit records
     visit.grocery_items.all().delete()
     visit.home_items.all().delete()
 
-    errors = {
-        "grocery_items": [],
-        "home_items": []
-    }
+    # Step 3: Add new selections
+    errors = {"grocery_items": [], "home_items": []}
 
-    # Re-add updated grocery items
+    # Handle grocery items
     for item in grocery_items:
         batch_id = item.get("batch_id")
         quantity = item.get("quantity")
 
-        if quantity <= 0:
-            errors["grocery_items"].append({"batch_id": batch_id, "error": "Quantity must be greater than zero"})
+        if not batch_id or quantity is None or quantity <= 0:
+            errors["grocery_items"].append({"batch_id": batch_id, "error": "Invalid quantity"})
             continue
 
         try:
@@ -209,19 +220,23 @@ def edit_visit(request):
             errors["grocery_items"].append({"batch_id": batch_id, "error": "Batch not found"})
             continue
 
-        VisitGroceryItem.objects.create(
-            visit=visit,
-            batch=batch,
-            quantity=quantity
-        )
+        if batch.quantity < quantity:
+            errors["grocery_items"].append({"batch_id": batch_id, "error": "Not enough stock"})
+            continue
 
-    # Re-add updated home items
+        VisitGroceryItem.objects.create(visit=visit, batch=batch, quantity=quantity)
+        batch.quantity -= quantity
+        if batch.quantity == 0:
+            batch.is_active = False
+        batch.save()
+
+    # Handle home items
     for item in home_items:
         item_id = item.get("item_id")
         quantity = item.get("quantity")
 
-        if quantity <= 0:
-            errors["home_items"].append({"item_id": item_id, "error": "Quantity must be greater than zero"})
+        if not item_id or quantity is None or quantity <= 0:
+            errors["home_items"].append({"item_id": item_id, "error": "Invalid quantity"})
             continue
 
         try:
@@ -230,11 +245,15 @@ def edit_visit(request):
             errors["home_items"].append({"item_id": item_id, "error": "Item not found"})
             continue
 
-        VisitHomeItem.objects.create(
-            visit=visit,
-            item=home_item,
-            quantity=quantity
-        )
+        if home_item.quantity < quantity:
+            errors["home_items"].append({"item_id": item_id, "error": "Not enough stock"})
+            continue
+
+        VisitHomeItem.objects.create(visit=visit, item=home_item, quantity=quantity)
+        home_item.quantity -= quantity
+        if home_item.quantity == 0:
+            home_item.is_active = False
+        home_item.save()
 
     return JsonResponse({
         "message": "Visit updated successfully",

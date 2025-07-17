@@ -7,6 +7,9 @@ from .serializers import GroceryBatchSerializer, GroceryItemSerializer, HomeItem
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+import logging
+logger = logging.getLogger(__name__)
+
 
 # Create your views here.
 
@@ -40,7 +43,8 @@ def view_item(request, id):
     if item_type == "home":
         item = HomeItem.objects.get(id = id)
         item_data = HomeItemSerializer(item).data
-        return JsonResponse({"item" : item_data})
+        return JsonResponse({ "item": item_data })
+
 
 
 
@@ -116,14 +120,22 @@ def create_item(request):
                 "quantity": quantity,
                 "expiration_date": data.get("expiration_date")
             }
-            batch_serializer = GroceryBatchSerializer(data = batch_data)
+            batch_serializer = GroceryBatchSerializer(data=batch_data)
 
             if batch_serializer.is_valid():
                 batch_serializer.save()        
-                return JsonResponse({"message": "Grocery item added successfully"})
-            
-        return JsonResponse({"error": grocery_item_serializer.errors}, status=400)
-    
+                return JsonResponse({
+                    "message": "Grocery item added successfully",
+                    "item_id": grocery_item.id
+                }, status=200)
+            else:
+                logger.error("Batch serializer errors: %s", batch_serializer.errors)  # ← ADD THIS
+                grocery_item.delete()
+                return JsonResponse({"error": "Batch creation failed", "batch_errors": batch_serializer.errors}, status=400)
+        else:
+            logger.error("Grocery item serializer errors: %s", grocery_item_serializer.errors)  # ← ADD THIS
+            return JsonResponse({"error": "Grocery item creation failed", "item_errors": grocery_item_serializer.errors}, status=400)
+
     if item_type == "home":
         item_data = {
             "name": data.get("name"),

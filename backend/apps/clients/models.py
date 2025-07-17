@@ -30,9 +30,10 @@ class Client(models.Model):
     staff_signature = models.CharField(max_length=100)
 
     # Docs
-    lease_doc = models.FileField(upload_to='client_docs/')
-    id_doc = models.FileField(upload_to='client_docs/')
-    bank_statement = models.FileField(upload_to='client_docs/')
+    lease_doc = models.FileField(upload_to='client_docs/', blank=True, null=True)
+    id_doc = models.FileField(upload_to='client_docs/', blank=True, null=True)
+    bank_statement = models.FileField(upload_to='client_docs/', blank=True, null=True)
+
 
     # Status
     qualified = models.BooleanField(default=False)
