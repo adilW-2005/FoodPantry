@@ -8,7 +8,7 @@ function RegisterForm() {
     const [form, setForm] = useState({ email: '', name: '', password: '', role: 'client' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const { loginContext } = useAuth();
+    const { loginContext, logoutContext } = useAuth();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -17,17 +17,26 @@ function RegisterForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
+        logoutContext();
         try{
-            const{ access } = await register(form)
+            const response = await register(form);
+            const { access } = response;
             loginContext(access);
             const user = jwtDecode(access);
+            
             if(user.role === 'client'){
-                navigate('/');
+                console.log(user.role)
+                navigate('/client/client-intake');
             }else if(user.role === 'employee'){
+                console.log(user.role)
                 navigate('/');
             }
         }catch(error){
-            console.error('Register failed:', error);
+            setError(error.response?.data?.detail || error.response?.data?.message || JSON.stringify(error.response?.data) || 'Registration failed. Please try again.');
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -43,27 +52,10 @@ function RegisterForm() {
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                Full Name
+                                Email Address
                             </label>
                             <div className="mt-1">
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    required
-                                    value={form.name}
-                                    onChange={handleChange}
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    placeholder="Full Name"
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email address
-                            </label>
-                            <div className="mt-1">
+                                
                                 <input
                                     id="email"
                                     name="email"
@@ -73,6 +65,24 @@ function RegisterForm() {
                                     onChange={handleChange}
                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                     placeholder="Email"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                Full Name
+                            </label>
+                            <div className="mt-1">
+                            <input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    required
+                                    value={form.name}
+                                    onChange={handleChange}
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                    placeholder="Full Name"
                                 />
                             </div>
                         </div>

@@ -16,12 +16,13 @@ function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const{ access } = await login(form)
+            const response = await login(form)
+            const{ access } = response
             loginContext(access);
             const user = jwtDecode(access);
             if(user.role === 'client'){
                 console.log(user.role);
-                navigate('/');
+                navigate('/client/dashboard');
             }else if(user.role === 'employee'){
                 console.log(user.role);
                 navigate('/');
