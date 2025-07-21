@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'
+import { injectAuthStore } from '../../api/axiosInstance';
 
 const AuthContext = createContext();
 
@@ -21,6 +22,10 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
   };
+
+  useEffect(() => {
+    injectAuthStore({ loginContext, logoutContext });
+  }, []);
 
   return (
     <AuthContext.Provider value={{ token, user, loginContext, logoutContext }}>

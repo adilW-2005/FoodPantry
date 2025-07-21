@@ -1,6 +1,6 @@
 const ItemCard = ({ item, onClick }) => (
     <div
-      onClick={() => onClick(item.id)}
+      onClick={() => onClick(item.id, item.type)}
       className="cursor-pointer bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
     >
       <h3 className="font-semibold text-gray-800">{item.name}</h3>
