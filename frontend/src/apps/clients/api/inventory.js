@@ -17,3 +17,13 @@ export const viewItem = async (id, item_type) => {
         throw error
     }
 }
+
+export const fetchItems = async () => {
+      const data = await viewItems();
+      const allItems = [
+        ...data.grocery_items.map(item => ({ ...item, type: 'grocery' })),
+        ...data.home_items.map(item => ({ ...item, type: 'home' })),
+      ];
+      return allItems;
+  
+  };

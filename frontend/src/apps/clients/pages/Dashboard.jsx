@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { viewItems, viewItem } from '../api/inventory';
+import { viewItem, fetchItems } from '../api/inventory';
 import DashboardHeader from '../components/DashboardHeader';
 import ItemCard from '../components/ItemCard';
 import ItemDetail from '../components/ItemDetail';
@@ -13,22 +13,17 @@ const Dashboard = () => {
   const [loadingDetail, setLoadingDetail] = useState(false);
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const load = async () => {
       try {
-        const data = await viewItems();
-        const allItems = [
-          ...data.grocery_items.map(item => ({ ...item, type: 'grocery' })),
-          ...data.home_items.map(item => ({ ...item, type: 'home' })),
-        ];
+        const allItems = await fetchItems();
         setItems(allItems);
       } catch (err) {
-        console.error('Error fetching items:', err);
+        console.error('Error loading items:', err);
       } finally {
         setLoadingItems(false);
       }
     };
-
-    fetchItems();
+    load();
   }, []);
 
   const handleItemClick = async (id, item_type) => {
