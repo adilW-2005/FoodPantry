@@ -2,7 +2,7 @@ import axiosInstance from '../../../api/axiosInstance';
 
 export const startVisit = async (startVisitData) => {
     try{
-        const response = await axiosInstance.post('/visit/start-visit', startVisitData)
+        const response = await axiosInstance.post('/visits/start_visit', startVisitData)
         return response.data
     } catch (error) {
         throw error
@@ -11,7 +11,7 @@ export const startVisit = async (startVisitData) => {
 
 export const submitVisit = async (visitData) => {
     try{
-        const response = await axiosInstance.post('/visit/submit-visit', visitData)
+        const response = await axiosInstance.post('/visits/submit_visit', visitData)
         return response.data
     } catch (error) {
         throw error
@@ -20,7 +20,7 @@ export const submitVisit = async (visitData) => {
 
 export const editVisit = async (editVisitData) => {
     try{
-        const response = await axiosInstance.post('/visit/edit-visit', editVisitData)
+        const response = await axiosInstance.post('/visits/edit_visit', editVisitData)
         return response.data
     } catch (error) {
         throw error
@@ -29,7 +29,7 @@ export const editVisit = async (editVisitData) => {
 
 export const viewVisitHistory = async () => {
     try{
-        const response = await axiosInstance.get('/visit/view-visit-history')
+        const response = await axiosInstance.get('/visits/view_my_visit_history')
         return response.data
     } catch (error) {
         throw error
@@ -38,7 +38,7 @@ export const viewVisitHistory = async () => {
 
 export const viewMyVisit = async (id) => {
     try{
-        const response = await axiosInstance.get(`/visit/view-my-visit/${id}`)
+        const response = await axiosInstance.get(`/visits/view_my_visit/${id}`)
         return response.data
     } catch (error) {
         throw error

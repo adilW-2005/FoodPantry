@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { fetchItems } from '../api/inventory';
 import DashboardHeader from '../components/DashboardHeader';
 import PinModal from '../components/PinModal';
+import QuantityInput from '../components/QuantityInput';
 import { startVisit } from '../api/visit';
 import { submitVisit } from '../api/visit';
+import { useNavigate } from 'react-router-dom';
 
 function VisitForm() {
+    const navigate = useNavigate();
     const [items, setItems] = useState([]);
     const [loadingItems, setLoadingItems] = useState(true);
     const [loading, setLoading] = useState(true);
@@ -30,6 +33,7 @@ function VisitForm() {
             setPin('');
             setShowPinModal(false);
             }
+        navigate('/client/dashboard');
         };
       
 
