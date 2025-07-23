@@ -109,8 +109,10 @@ def create_item(request):
             "barcode": data.get("barcode"),
             "unit": data.get("unit"),
             "category": data.get("category"),
-            "restock_threshold": data.get("restock_threshold"),
         }
+        # Only include restock_threshold if it's provided
+        if data.get("restock_threshold") is not None:
+            item_data["restock_threshold"] = data.get("restock_threshold")
         grocery_item_serializer = GroceryItemSerializer(data = item_data)
         
         if grocery_item_serializer.is_valid():
@@ -143,8 +145,10 @@ def create_item(request):
             "quantity": quantity,
             "brand": data.get("brand"),
             "category": data.get("category"),
-            "restock_threshold": data.get("restock_threshold")
         }
+        # Only include restock_threshold if it's provided
+        if data.get("restock_threshold") is not None:
+            item_data["restock_threshold"] = data.get("restock_threshold")
         home_item_serializer = HomeItemSerializer(data = item_data)
 
         if home_item_serializer.is_valid():

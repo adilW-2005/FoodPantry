@@ -6,6 +6,7 @@ class GroceryItemSerializer(serializers.ModelSerializer):
     total_quantity = serializers.SerializerMethodField()
     next_batch = serializers.SerializerMethodField()
     batches = serializers.SerializerMethodField()
+    restock_threshold = serializers.IntegerField(required=False, default=10)
 
     class Meta:
         model = GroceryItem
@@ -38,9 +39,15 @@ class GroceryBatchSerializer(serializers.ModelSerializer):
         
     
 class HomeItemSerializer(serializers.ModelSerializer):
+    total_quantity = serializers.SerializerMethodField()
+    restock_threshold = serializers.IntegerField(required=False, default=10)
+    
     class Meta:
         model = HomeItem
         fields = '__all__'
+    
+    def get_total_quantity(self, obj):
+        return obj.quantity
     
     def is_low_stock(self, obj):
         return obj.quantity < obj.restock_threshold

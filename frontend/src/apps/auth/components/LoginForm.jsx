@@ -25,7 +25,7 @@ function LoginForm() {
                 navigate('/client/dashboard');
             }else if(user.role === 'employee'){
                 console.log(user.role);
-                navigate('/');
+                navigate('/employee/dashboard');
             }
         }catch(error){
             console.error('Login failed:', error);
