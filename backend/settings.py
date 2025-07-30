@@ -14,11 +14,15 @@ from datetime import timedelta
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
+# 🔄 SINGLE TOGGLE: Change this one variable to switch between development/production
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')  # 'development' or 'production'
+IS_PRODUCTION = ENVIRONMENT == 'production'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'
 
@@ -26,12 +30,16 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-46dlh(0ug6dbqejeiqr^(bmj-q%ye6f9!4ism-5nz0x2lhxxx)"
+SECRET_KEY = os.getenv('SECRET_KEY', "django-insecure-46dlh(0ug6dbqejeiqr^(bmj-q%ye6f9!4ism-5nz0x2lhxxx)")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not IS_PRODUCTION  # Automatically set based on environment
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# Automatically configure allowed hosts
+if IS_PRODUCTION:
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else []
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -64,12 +72,21 @@ REST_FRAMEWORK = {
 # URL Configuration
 APPEND_SLASH = False
 
-# CORS Settings
+# CORS Settings - Automatically configured based on environment
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+
+if IS_PRODUCTION:
+    # Production: Use environment variable for frontend URL
+    FRONTEND_URL = os.getenv('FRONTEND_URL')
+    CORS_ALLOWED_ORIGINS = [FRONTEND_URL] if FRONTEND_URL else []
+else:
+    # Development: Allow local development servers
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",  # In case you use different port
+        "http://127.0.0.1:3000",
+    ]
 
 
 
@@ -98,7 +115,7 @@ CORS_ALLOW_HEADERS = [
 # Reduce preflight cache to prevent future issues
 CORS_PREFLIGHT_MAX_AGE = 0
 
-# Fix middleware order
+# Middleware - Automatically configured
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -130,19 +147,26 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-# Database
+# Database - Automatically configured based on environment
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "AnnisaFoodPantryDB",
-        "USER": "postgres",
-        "PASSWORD": "Adil2125",
-        "HOST": "localhost",
-        "PORT": "5432",
+if IS_PRODUCTION and 'DATABASE_URL' in os.environ:
+    # Production: Use DATABASE_URL from environment
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-}
+else:
+    # Development: Use local PostgreSQL
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "AnnisaFoodPantryDB",
+            "USER": "postgres",
+            "PASSWORD": "Adil2125",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
 
 
 # Password validation
@@ -176,7 +200,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# Static files - Automatically configured based on environment
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
@@ -191,9 +215,6 @@ STORAGES = {
     }
 }
 
-# Remove the old DEFAULT_FILE_STORAGE setting if it exists
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
@@ -203,8 +224,17 @@ AWS_DEFAULT_ACL = None
 AWS_QUERYSTRING_AUTH = True
 
 # Media files configuration
-MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
+MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/' if AWS_STORAGE_BUCKET_NAME else '/media/'
 MEDIA_ROOT = ''  # Since we're using S3, we don't need a local media root
+
+# Security settings - Automatically applied in production
+if IS_PRODUCTION:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    X_FRAME_OPTIONS = 'DENY'
 
 # Logging configuration
 LOGGING = {
@@ -217,12 +247,12 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'INFO',
+        'level': 'INFO' if IS_PRODUCTION else 'DEBUG',
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'INFO' if IS_PRODUCTION else 'DEBUG',
             'propagate': False,
         },
         'backend.apps.clients': {
@@ -238,15 +268,7 @@ LOGGING = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Enable django-storages for S3
-# INSTALLED_APPS += ['storages']  # Removed duplicate
-
-# INSTALLED_APPS += ['corsheaders']  # Removed duplicate
-
 AUTH_USER_MODEL = 'custom_auth.User'  # Updated to use the new label
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
+# 🎯 ENVIRONMENT INFO (for debugging)
+print(f"🌍 Running in {ENVIRONMENT.upper()} mode (DEBUG={DEBUG})")

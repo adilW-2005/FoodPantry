@@ -12,4 +12,8 @@ django-cors-headers>=4.3
 # For environment variables
 python-dotenv>=1.0
 # For file uploads and image handling (optional)
-Pillow>=10.0 
+Pillow>=10.0
+# For production deployment
+dj-database-url>=2.0
+whitenoise>=6.0
+gunicorn>=21.0 
