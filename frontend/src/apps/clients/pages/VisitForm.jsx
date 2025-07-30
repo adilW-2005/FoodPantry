@@ -125,83 +125,156 @@ function VisitForm() {
     };
     
     return (
-    <div>
-        <DashboardHeader onCancel={handleCancelVisit}/>
-
-        <div className="max-w-xl mx-auto mb-6 space-y-4">
-        <input
-            type="text"
-            placeholder="Your Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-            type="text"
-            placeholder="Your Address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-        />
-        </div>
-
-    <div className="container mx-auto p-4">
-        <h2 className="text-lg font-semibold mt-8 mb-2">Grocery Items</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {items
-            .filter(item => item.type === 'grocery')
-            .map(item => (
-            <div key={item.id} className="border rounded p-3 bg-white shadow-sm">
-                <h3 className="font-semibold mb-1">{item.name}</h3>
-                {item.batches.map(batch => (
-                <div key={batch.id} className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-gray-500">
-                    Exp: {batch.expiration_date} | Qty: {batch.quantity}
-                    </span>
-                    <QuantityInput
-                    value={grocerySelections[batch.id] || ''}
-                    max={batch.quantity}
-                    onChange={quantity => handleGroceryQuantityChange(batch.id, quantity)}
-                    />
+    <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center h-16">
+                    <h1 className="text-2xl font-bold text-[#169fcb]">AnNisa Pantry</h1>
+                    <p className="text-gray-600">Visit Form</p>
                 </div>
-                ))}
             </div>
-            ))}
-        </div>
-                <h2 className="text-lg font-semibold mt-8 mb-2">Home Items</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {items
-            .filter(item => item.type === 'home')
-            .map(item => (
-            <div key={item.id} className="border rounded p-3 bg-white shadow-sm">
-                <h3 className="font-semibold">{item.name}</h3>
-                <p className="text-sm text-gray-600 mb-2">In stock: {item.quantity}</p>
-                <QuantityInput
-                    value={homeSelections[item.id] || ''}
-                    max={item.quantity}
-                    onChange={quantity => handleHomeQuantityChange(item.id, quantity)}
-                />
+        </header>
+
+        {/* Main Content */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <DashboardHeader onCancel={handleCancelVisit}/>
+
+            {/* Personal Information */}
+            <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                            Full Name
+                        </label>
+                        <input
+                            id="name"
+                            type="text"
+                            placeholder="Enter your full name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                            Address
+                        </label>
+                        <input
+                            id="address"
+                            type="text"
+                            placeholder="Enter your address"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
+                        />
+                    </div>
+                </div>
             </div>
-        ))}
-        </div>
-        </div>
 
-                <div className="text-center mt-10">
-        <button
-            onClick={handleStartVisit}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-        >
-            Continue to PIN
-        </button>
-        </div>
+            {/* Grocery Items */}
+            <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden mb-6">
+                <div className="bg-green-50 px-6 py-4 border-b border-green-200">
+                    <h3 className="text-lg font-bold text-green-800 flex items-center">
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 7a2 2 0 012-2h10a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Grocery Items
+                    </h3>
+                    <p className="text-green-700 text-sm mt-1">Select quantities for food items</p>
+                </div>
+                
+                <div className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {items
+                            .filter(item => item.type === 'grocery')
+                            .map(item => (
+                            <div key={item.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <h4 className="text-lg font-semibold text-gray-900 mb-3">{item.name}</h4>
+                                <div className="space-y-3">
+                                    {item.batches.map(batch => (
+                                        <div key={batch.id} className="bg-gray-50 rounded-md p-3">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <div>
+                                                    <p className="text-sm text-gray-600">
+                                                        Expires: {batch.expiration_date}
+                                                    </p>
+                                                    <p className="text-sm font-medium text-gray-700">
+                                                        Available: {batch.quantity}
+                                                    </p>
+                                                </div>
+                                                <QuantityInput
+                                                    value={grocerySelections[batch.id] || ''}
+                                                    max={batch.quantity}
+                                                    onChange={quantity => handleGroceryQuantityChange(batch.id, quantity)}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            ))}
+                    </div>
+                </div>
+            </div>
 
-        <PinModal
-            isOpen={showPinModal}
-            onClose={() => setShowPinModal(false)}
-            onConfirm={handleSubmitVisit}
-            pin={pin}
-            setPin={setPin}
-        />
+            {/* Home Items */}
+            <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden mb-8">
+                <div className="bg-blue-50 px-6 py-4 border-b border-blue-200">
+                    <h3 className="text-lg font-bold text-blue-800 flex items-center">
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2v2z" />
+                        </svg>
+                        Home Items
+                    </h3>
+                    <p className="text-blue-700 text-sm mt-1">Select quantities for household items</p>
+                </div>
+                
+                <div className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {items
+                            .filter(item => item.type === 'home')
+                            .map(item => (
+                            <div key={item.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <h4 className="text-lg font-semibold text-gray-900 mb-2">{item.name}</h4>
+                                <div className="flex justify-between items-center">
+                                    <p className="text-sm text-gray-600">In stock: {item.quantity}</p>
+                                    <QuantityInput
+                                        value={homeSelections[item.id] || ''}
+                                        max={item.quantity}
+                                        onChange={quantity => handleHomeQuantityChange(item.id, quantity)}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="text-center">
+                <button
+                    onClick={handleStartVisit}
+                    disabled={!name.trim() || !address.trim()}
+                    className={`px-8 py-4 rounded-lg font-medium text-lg transition-colors ${
+                        name.trim() && address.trim()
+                            ? 'bg-[#169fcb] text-white hover:bg-[#128ab2] shadow-md hover:shadow-lg'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                >
+                    Continue to PIN Verification
+                </button>
+            </div>
+
+            <PinModal
+                isOpen={showPinModal}
+                onClose={() => setShowPinModal(false)}
+                onConfirm={handleSubmitVisit}
+                pin={pin}
+                setPin={setPin}
+            />
+        </main>
     </div>
   )
 }

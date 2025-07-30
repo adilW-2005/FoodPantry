@@ -6,15 +6,21 @@ import { useAuth } from '../authContext.jsx'
 
 function LoginForm() {
     const [form, setForm] = useState({ email: '', password: '' });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const { loginContext } = useAuth();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
+        setError(''); // Clear error when user types
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
+        
         try{
             const response = await login(form)
             const{ access } = response
@@ -29,64 +35,110 @@ function LoginForm() {
             }
         }catch(error){
             console.error('Login failed:', error);
+            setError('Invalid email or password. Please try again.');
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            {/* Header */}
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Sign in to your account
-                </h2>
+                <div className="text-center">
+                    <h1 className="text-3xl font-bold text-[#169fcb] mb-2">AnNisa Pantry</h1>
+                    <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
+                    <p className="text-gray-600 mt-2">Sign in to your account to continue</p>
+                </div>
             </div>
+
+            {/* Form */}
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                <div className="bg-white py-8 px-4 shadow-md sm:rounded-lg sm:px-10 border border-gray-100">
+                    {error && (
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                            <p className="text-red-600 text-sm">{error}</p>
+                        </div>
+                    )}
+                    
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                                 Email address
                             </label>
-                            <div className="mt-1">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    required
-                                    value={form.email}
-                                    onChange={handleChange}
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    placeholder="Email"
-                                />
-                            </div>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                value={form.email}
+                                onChange={handleChange}
+                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] sm:text-sm transition-colors"
+                                placeholder="Enter your email"
+                            />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                                 Password
                             </label>
-                            <div className="mt-1">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    required
-                                    value={form.password}
-                                    onChange={handleChange}
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    placeholder="Password"
-                                />
-                            </div>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                value={form.password}
+                                onChange={handleChange}
+                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] sm:text-sm transition-colors"
+                                placeholder="Enter your password"
+                            />
                         </div>
 
                         <div>
                             <button
                                 type="submit"
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                disabled={loading}
+                                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#169fcb] hover:bg-[#128ab2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#169fcb] transition-colors ${
+                                    loading ? 'opacity-70 cursor-not-allowed' : ''
+                                }`}
                             >
-                                Sign in
+                                {loading ? (
+                                    <span className="flex items-center">
+                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Signing in...
+                                    </span>
+                                ) : (
+                                    'Sign in'
+                                )}
                             </button>
                         </div>
                     </form>
+
+                    {/* Register link */}
+                    <div className="mt-6 text-center">
+                        <p className="text-gray-600">
+                            Don't have an account?{' '}
+                            <button
+                                onClick={() => navigate('/register')}
+                                className="text-[#169fcb] hover:text-[#128ab2] font-medium transition-colors"
+                            >
+                                Register here
+                            </button>
+                        </p>
+                    </div>
+
+                    {/* Back to home */}
+                    <div className="mt-4 text-center">
+                        <button
+                            onClick={() => navigate('/')}
+                            className="text-gray-500 hover:text-gray-700 text-sm transition-colors"
+                        >
+                            ← Back to home
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

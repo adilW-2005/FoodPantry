@@ -36,3 +36,12 @@ export const qualifyClient = async (id) => {
         throw error
     }
 }
+
+export const fetchClients = async () => {
+    try{
+        const response = await axiosInstance.get('/employee/view_all_clients')
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

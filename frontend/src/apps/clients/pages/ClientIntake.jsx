@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { intakeClient } from '../api/clientApi';
+import logo from '../../../assets/annisa logo antry.png';
 
 function ClientIntake() {
   const [form, setForm] = useState({
@@ -80,25 +81,42 @@ function ClientIntake() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-[#169fcb] to-[#0d7aa7] shadow-lg border-b border-blue-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center">
+              <img 
+                src={logo} 
+                alt="AnNisa Food Pantry Logo" 
+                className="h-50 w-50 object-contain mr-3 rounded-lg p-1"
+              />
+              <h1 className="text-2xl font-bold text-white">AnNisa Food Pantry</h1>
+            </div>
+            <p className="text-blue-100 font-medium">Client Intake</p>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* Form Header */}
         <div className="text-center mb-8">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white shadow-xl">
-            <h1 className="text-4xl font-bold mb-2">Client Intake Form</h1>
+          <div className="bg-gradient-to-r from-[#169fcb] to-[#0d7aa7] rounded-lg p-8 text-white shadow-lg">
+            <h2 className="text-3xl font-bold mb-2">Client Intake Form</h2>
             <p className="text-blue-100 text-lg">Please fill out all required information below</p>
           </div>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} encType="multipart/form-data" className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100">
           
           {/* Personal Information Section */}
           <div className="p-8 border-b border-gray-200">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">1</div>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+              <div className="w-8 h-8 bg-[#169fcb] rounded-full flex items-center justify-center text-white font-bold mr-3">1</div>
               Personal Information
-            </h2>
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -112,7 +130,7 @@ function ClientIntake() {
                   value={form.full_name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
                 />
               </div>
               <div>
@@ -126,7 +144,7 @@ function ClientIntake() {
                   value={form.dob}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
                 />
               </div>
               <div>
@@ -141,7 +159,7 @@ function ClientIntake() {
                   value={form.phone}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
                 />
               </div>
               <div>
@@ -156,7 +174,7 @@ function ClientIntake() {
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
                 />
               </div>
             </div>
@@ -164,10 +182,10 @@ function ClientIntake() {
 
           {/* Household Information Section */}
           <div className="p-8 border-b border-gray-200">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3">2</div>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+              <div className="w-8 h-8 bg-[#169fcb] rounded-full flex items-center justify-center text-white font-bold mr-3">2</div>
               Household Information
-            </h2>
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="num_children" className="block text-sm font-medium text-gray-700 mb-2">
@@ -181,7 +199,7 @@ function ClientIntake() {
                   placeholder="0"
                   value={form.num_children}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
                 />
               </div>
               <div>
@@ -196,7 +214,7 @@ function ClientIntake() {
                   placeholder="1"
                   value={form.num_adults}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
                 />
               </div>
             </div>
@@ -204,10 +222,10 @@ function ClientIntake() {
 
           {/* Assistance Programs Section */}
           <div className="p-8 border-b border-gray-200">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">3</div>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+              <div className="w-8 h-8 bg-[#169fcb] rounded-full flex items-center justify-center text-white font-bold mr-3">3</div>
               Current Assistance Programs
-            </h2>
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
                 { name: 'snap', label: 'SNAP (Food Stamps)' },
@@ -216,13 +234,13 @@ function ClientIntake() {
                 { name: 'ssi', label: 'SSI' },
                 { name: 'medicaid', label: 'Medicaid' }
               ].map((program) => (
-                <label key={program.name} className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer">
+                <label key={program.name} className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-[#169fcb] hover:bg-blue-50 transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     name={program.name}
                     checked={form[program.name]}
                     onChange={handleChange}
-                    className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                    className="w-5 h-5 text-[#169fcb] border-gray-300 rounded focus:ring-[#169fcb] focus:ring-2"
                   />
                   <span className="ml-3 text-gray-700 font-medium">{program.label}</span>
                 </label>
@@ -232,10 +250,10 @@ function ClientIntake() {
 
           {/* Additional Information Section */}
           <div className="p-8 border-b border-gray-200">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold mr-3">4</div>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+              <div className="w-8 h-8 bg-[#169fcb] rounded-full flex items-center justify-center text-white font-bold mr-3">4</div>
               Additional Information
-            </h2>
+            </h3>
             <div>
               <label htmlFor="food_allergies" className="block text-sm font-medium text-gray-700 mb-2">
                 Food Allergies/Dietary Restrictions
@@ -247,17 +265,17 @@ function ClientIntake() {
                 value={form.food_allergies}
                 onChange={handleChange}
                 rows="4"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors resize-vertical"
               />
             </div>
           </div>
 
           {/* Required Documents Section */}
           <div className="p-8 border-b border-gray-200">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold mr-3">5</div>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+              <div className="w-8 h-8 bg-[#169fcb] rounded-full flex items-center justify-center text-white font-bold mr-3">5</div>
               Required Documents
-            </h2>
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 { name: 'lease_doc', label: 'Lease Document' },
@@ -275,7 +293,7 @@ function ClientIntake() {
                       name={doc.name}
                       onChange={handleChange}
                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                      className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                      className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#169fcb] focus:border-[#169fcb] focus:ring-2 focus:ring-[#169fcb] focus:ring-opacity-20 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-[#169fcb] hover:file:bg-blue-100"
                     />
                   </div>
                   <p className="text-xs text-gray-500">PDF, DOC, DOCX, JPG, PNG accepted</p>
@@ -286,10 +304,10 @@ function ClientIntake() {
 
           {/* Staff Information Section */}
           <div className="p-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold mr-3">6</div>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+              <div className="w-8 h-8 bg-[#169fcb] rounded-full flex items-center justify-center text-white font-bold mr-3">6</div>
               Staff Information
-            </h2>
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
               <div>
                 <label htmlFor="staff_signature" className="block text-sm font-medium text-gray-700 mb-2">
@@ -303,18 +321,18 @@ function ClientIntake() {
                   value={form.staff_signature}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#169fcb] focus:border-[#169fcb] transition-colors"
                 />
               </div>
               <div>
-                <label className="flex items-center p-4 bg-yellow-50 border-2 border-yellow-200 rounded-lg hover:bg-yellow-100 transition-colors cursor-pointer">
+                <label className="flex items-center p-4 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     name="consent_signed"
                     checked={form.consent_signed}
                     onChange={handleChange}
                     required
-                    className="w-5 h-5 text-yellow-600 border-yellow-300 rounded focus:ring-yellow-500 focus:ring-2"
+                    className="w-5 h-5 text-[#169fcb] border-blue-300 rounded focus:ring-[#169fcb] focus:ring-2"
                   />
                   <span className="ml-3 text-gray-700 font-medium">
                     Client consent has been signed and documented <span className="text-red-500">*</span>
@@ -330,8 +348,8 @@ function ClientIntake() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 ${
-                  isSubmitting ? 'opacity-70 cursor-not-allowed transform-none' : ''
+                className={`px-8 py-4 bg-gradient-to-r from-[#169fcb] to-[#0d7aa7] text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-[#128ab2] hover:to-[#0a648a] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 ${
+                  isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
                 }`}
               >
                 {isSubmitting ? (
