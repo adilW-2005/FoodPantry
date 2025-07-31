@@ -203,7 +203,12 @@ USE_TZ = True
 # Static files - Automatically configured based on environment
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Production static files configuration
+if IS_PRODUCTION:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # S3 Configuration
 STORAGES = {
