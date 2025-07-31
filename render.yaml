@@ -23,6 +23,8 @@ services:
         fromDatabase:
           name: food-pantry-db
           property: connectionString
+      - key: DJANGO_SETTINGS_MODULE
+        value: backend.settings
       - key: AWS_ACCESS_KEY_ID
         sync: false
       - key: AWS_SECRET_ACCESS_KEY
