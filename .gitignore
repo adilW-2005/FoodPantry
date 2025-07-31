@@ -1,41 +1,121 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+# Frontend dependencies
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.*
+/frontend/.yarn/*
+!/frontend/.yarn/patches
+!/frontend/.yarn/plugins
+!/frontend/.yarn/releases
+!/frontend/.yarn/versions
 
-# testing
-/coverage
+# Frontend testing
+/frontend/coverage
 
-# next.js
-/.next/
-/out/
+# Frontend builds
+/frontend/.next/
+/frontend/out/
+/frontend/build
+/frontend/dist
 
-# production
-/build
-
-# misc
+# Frontend misc
 .DS_Store
 *.pem
 
-# debug
+# Frontend debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env
-
-# vercel
-.vercel
-
-# typescript
+# Frontend typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Environment files (can opt-in for committing if needed)
+.env
+.env.local
+.env.*.local
+
+# Vercel
+.vercel
+
+# Django Backend
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/*.so
+backend/.Python
+backend/build/
+backend/develop-eggs/
+backend/dist/
+backend/downloads/
+backend/eggs/
+backend/.eggs/
+backend/lib/
+backend/lib64/
+backend/parts/
+backend/sdist/
+backend/var/
+backend/wheels/
+backend/share/python-wheels/
+backend/*.egg-info/
+backend/.installed.cfg
+backend/*.egg
+backend/MANIFEST
+
+# Django database
+backend/db.sqlite3
+backend/db.sqlite3-journal
+
+# Django media and static files (in production these are handled by S3)
+backend/media/
+backend/staticfiles/
+backend/static/
+
+# Django virtual environment
+backend/venv/
+backend/env/
+backend/ENV/
+
+# Django local settings
+backend/local_settings.py
+
+# Django secret key
+backend/.secret_key
+
+# Pytest
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+
+# Jupyter Notebook
+backend/.ipynb_checkpoints
+
+# IPython
+backend/profile_default/
+backend/ipython_config.py
+
+# Django logs
+backend/*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
